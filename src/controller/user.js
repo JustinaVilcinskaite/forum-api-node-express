@@ -3,6 +3,8 @@ import UserModel from "../model/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// TODO: validations
+
 const SIGN_UP = async (req, res) => {
   try {
     const { name, email, password } = req.body;

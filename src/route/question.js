@@ -8,15 +8,11 @@ import {
 
 import authUser from "../middleware/auth.js";
 
-// GET /questions
-// POST /question
-// DELETE /question/:id
-
-// // CREATE_QUESTION // POST_QUESTION
+// TODO: validation middleware/schema
 
 const router = express.Router();
 
-router.get("/questions ", GET_ALL_QUESTIONS);
+router.get("/questions", GET_ALL_QUESTIONS);
 router.post("/questions", authUser, CREATE_QUESTION);
 router.delete("/questions/:id", authUser, DELETE_QUESTION_BY_ID);
 

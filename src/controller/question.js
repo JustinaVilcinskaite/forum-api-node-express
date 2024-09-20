@@ -1,12 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import QuestionModel from "../model/question.js";
 
+// TODO: validations
+
 const CREATE_QUESTION = async (req, res) => {
   try {
     const question = new QuestionModel({
       id: uuidv4(),
       questionText: req.body.questionText,
-      // date
       date: req.body.date,
       userId: req.body.userId,
     });
