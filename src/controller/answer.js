@@ -63,7 +63,7 @@ const CREATE_ANSWER_FOR_QUESTION = async (req, res) => {
     const answer = new AnswerModel({
       id: uuidv4(),
       answerText: req.body.answerText,
-      date: req.body.date,
+      // date: new Date(),
       // ?
       questionId: req.params.id,
     });

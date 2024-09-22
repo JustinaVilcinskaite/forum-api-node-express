@@ -7,8 +7,9 @@ const CREATE_QUESTION = async (req, res) => {
   try {
     const question = new QuestionModel({
       id: uuidv4(),
+      questionTitle: req.body.questionTitle,
       questionText: req.body.questionText,
-      date: req.body.date,
+      // date: new Date(),
       userId: req.body.userId,
     });
 

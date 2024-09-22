@@ -7,12 +7,6 @@ import jwt from "jsonwebtoken";
 
 const SIGN_UP = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
     const existingUser = await UserModel.findOne({ email: req.body.email });
 
     if (existingUser) {
