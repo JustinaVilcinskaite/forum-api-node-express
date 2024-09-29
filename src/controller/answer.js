@@ -66,6 +66,8 @@ const CREATE_ANSWER_FOR_QUESTION = async (req, res) => {
       // date: new Date(),
       // ?
       questionId: req.params.id,
+      userId: req.body.userId,
+      // gainedLikesNumber: req.body.gainedLikesNumber,
     });
 
     await answer.save();
@@ -93,11 +95,11 @@ const DELETE_ANSWER_BY_ID = async (req, res) => {
 
     //??? login/validate
     // user id/validation
-    // if (answer.userId !== req.body.userId) {
-    //   return res.status(403).json({
-    //     message: "You can only delete answer that you posted",
-    //   });
-    // }
+    if (answer.userId !== req.body.userId) {
+      return res.status(403).json({
+        message: "You can only delete answer that you posted",
+      });
+    }
 
     await AnswerModel.deleteOne({ id: id });
 
@@ -110,8 +112,104 @@ const DELETE_ANSWER_BY_ID = async (req, res) => {
   }
 };
 
+const POST_LIKE_ANSWER = async (req, res) => {
+  try {
+    const answer = await AnswerModel.findOne({ id: req.params.id });
+
+    if (!answer) {
+      return res.status(404).json({ message: "Answer not found" });
+    }
+
+    const userId = req.body.userId;
+
+    if (answer.likedBy.includes(userId)) {
+      return res
+        .status(400)
+        .json({ message: "You have already liked this answer" });
+    }
+
+    if (answer.dislikedBy.includes(userId)) {
+      answer.dislikedBy = answer.dislikedBy.filter((id) => id !== userId);
+
+      answer.gainedLikesNumber += 1;
+    } else {
+      answer.gainedLikesNumber += 1;
+    }
+
+    answer.likedBy.push(userId);
+
+    await answer.save();
+
+    return res.status(200).json({
+      message: "Post liked",
+      netScore: answer.gainedLikesNumber,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Error in application" });
+  }
+};
+
+const POST_DISLIKE_ANSWER = async (req, res) => {
+  try {
+    const answer = await AnswerModel.findOne({ id: req.params.id });
+
+    if (!answer) {
+      return res.status(404).json({ message: "Answer not found" });
+    }
+
+    const userId = req.body.userId;
+
+    if (answer.dislikedBy.includes(userId)) {
+      return res
+        .status(400)
+        .json({ message: "You have already disliked this answer" });
+    }
+
+    if (answer.likedBy.includes(userId)) {
+      answer.likedBy = answer.likedBy.filter((id) => id !== userId);
+
+      answer.gainedLikesNumber -= 1;
+    } else {
+      answer.gainedLikesNumber -= 1;
+    }
+
+    answer.dislikedBy.push(userId);
+
+    await answer.save();
+
+    return res.status(200).json({
+      message: "Post disliked",
+      netScore: answer.gainedLikesNumber,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Error in application" });
+  }
+};
+
+const GET_NET_SCORE_LIKES_FOR_ANSWER = async (req, res) => {
+  try {
+    const answer = await AnswerModel.findOne({ id: req.params.id });
+
+    if (!answer) {
+      return res.status(404).json({ message: "Answer not found" });
+    }
+
+    return res.status(200).json({
+      netScore: answer.gainedLikesNumber,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Error in application" });
+  }
+};
+
 export {
   GET_QUESTION_WITH_ANSWERS,
   CREATE_ANSWER_FOR_QUESTION,
   DELETE_ANSWER_BY_ID,
+  POST_LIKE_ANSWER,
+  POST_DISLIKE_ANSWER,
+  GET_NET_SCORE_LIKES_FOR_ANSWER,
 };

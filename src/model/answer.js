@@ -6,7 +6,10 @@ const answerSchema = mongoose.Schema({
   date: { type: Date, default: Date.now },
   // date:  { type: Date, required: true },
   gainedLikesNumber: { type: Number, default: 0 },
+  likedBy: [{ type: String }],
+  dislikedBy: [{ type: String }],
   questionId: { type: String, required: true },
+  userId: { type: String, required: true },
 });
 
 export default mongoose.model("Answer", answerSchema);

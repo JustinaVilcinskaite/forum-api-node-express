@@ -5,6 +5,10 @@ import QuestionModel from "../model/question.js";
 
 const CREATE_QUESTION = async (req, res) => {
   try {
+    // kazkas blogai cia
+    // if (!req.body.questionTitle || !question.req.body.questionText) {
+    //   return res.status(400).json({ message: "All fields are required" });
+    // }
     const question = new QuestionModel({
       id: uuidv4(),
       questionTitle: req.body.questionTitle,
