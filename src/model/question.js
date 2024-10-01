@@ -7,6 +7,7 @@ const questionSchema = mongoose.Schema({
   date: { type: Date, default: Date.now },
   // date:  { type: Date, required: true },
   userId: { type: String, required: true },
+  isAnswered: { type: Boolean, default: false },
 });
 
 export default mongoose.model("Question", questionSchema);

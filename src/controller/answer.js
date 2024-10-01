@@ -17,7 +17,9 @@ const GET_QUESTION_WITH_ANSWERS = async (req, res) => {
         .json({ message: `Question with id ${id} does not exist.` });
     }
 
-    const answers = await AnswerModel.find({ questionId: id });
+    const answers = await AnswerModel.find({ questionId: id }).sort({
+      date: 1,
+    });
 
     return res.status(200).json({
       question: question,
@@ -72,6 +74,11 @@ const CREATE_ANSWER_FOR_QUESTION = async (req, res) => {
 
     await answer.save();
 
+    await QuestionModel.findOneAndUpdate(
+      { id: req.params.id },
+      { isAnswered: true }
+    );
+
     return res
       .status(201)
       .json({ message: "Answer has been added", answer: answer });
@@ -102,6 +109,17 @@ const DELETE_ANSWER_BY_ID = async (req, res) => {
     }
 
     await AnswerModel.deleteOne({ id: id });
+
+    const remainingAnswers = await AnswerModel.find({
+      questionId: answer.questionId,
+    });
+
+    if (remainingAnswers.length === 0) {
+      await QuestionModel.findOneAndUpdate(
+        { id: answer.questionId },
+        { isAnswered: false }
+      );
+    }
 
     return res
       .status(200)
@@ -197,7 +215,7 @@ const GET_NET_SCORE_LIKES_FOR_ANSWER = async (req, res) => {
     }
 
     return res.status(200).json({
-      netScore: answer.gainedLikesNumber,
+      gainedLikesNumber: answer.gainedLikesNumber,
     });
   } catch (err) {
     console.log(err);

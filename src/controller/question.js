@@ -30,7 +30,7 @@ const CREATE_QUESTION = async (req, res) => {
 
 const GET_ALL_QUESTIONS = async (req, res) => {
   try {
-    const questions = await QuestionModel.find();
+    const questions = await QuestionModel.find().sort({ date: 1 });
 
     return res.status(200).json({ questions: questions });
   } catch (err) {

@@ -26,7 +26,7 @@ router.post("/questions/:id/answers", authUser, CREATE_ANSWER_FOR_QUESTION);
 
 router.post("/answers/:id/like", authUser, POST_LIKE_ANSWER);
 router.post("/answers/:id/dislike", authUser, POST_DISLIKE_ANSWER);
-router.get("/answers/:id/score", GET_NET_SCORE_LIKES_FOR_ANSWER);
+router.get("/answers/:id/likes", GET_NET_SCORE_LIKES_FOR_ANSWER);
 
 router.delete("/answers/:id", authUser, DELETE_ANSWER_BY_ID);
 
