@@ -7,13 +7,13 @@ import {
 } from "../controller/question.js";
 
 import authUser from "../middleware/auth.js";
-
-// TODO: validation middleware/schema
+import validate from "../middleware/validation.js";
+import questionSchema from "../schema/question.js";
 
 const router = express.Router();
 
 router.get("/questions", GET_ALL_QUESTIONS);
-router.post("/questions", authUser, CREATE_QUESTION);
+router.post("/questions", authUser, validate(questionSchema), CREATE_QUESTION);
 router.delete("/questions/:id", authUser, DELETE_QUESTION_BY_ID);
 
 export default router;

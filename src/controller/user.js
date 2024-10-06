@@ -3,8 +3,6 @@ import UserModel from "../model/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// TODO: validations
-
 const SIGN_UP = async (req, res) => {
   try {
     const existingUser = await UserModel.findOne({ email: req.body.email });
@@ -36,15 +34,6 @@ const SIGN_UP = async (req, res) => {
 
 const LOGIN = async (req, res) => {
   try {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Both email and password are required" });
-    }
-
     const user = await UserModel.findOne({ email: req.body.email });
 
     if (!user) {
@@ -53,7 +42,10 @@ const LOGIN = async (req, res) => {
       });
     }
 
-    const isPasswordMatch = bcrypt.compareSync(password, user.password);
+    const isPasswordMatch = bcrypt.compareSync(
+      req.body.password,
+      user.password
+    );
 
     if (!isPasswordMatch) {
       return res.status(401).json({
@@ -69,8 +61,6 @@ const LOGIN = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "24H" }
     );
-
-    // userId: user.id, //login/validate
 
     return res.status(200).json({
       token: token,

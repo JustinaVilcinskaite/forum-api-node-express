@@ -1,20 +1,17 @@
 import { v4 as uuidv4 } from "uuid";
 import QuestionModel from "../model/question.js";
-
-// TODO: validations
+import AnswerModel from "../model/answer.js";
+import UserModel from "../model/user.js";
 
 const CREATE_QUESTION = async (req, res) => {
   try {
-    // kazkas blogai cia
-    // if (!req.body.questionTitle || !question.req.body.questionText) {
-    //   return res.status(400).json({ message: "All fields are required" });
-    // }
     const question = new QuestionModel({
       id: uuidv4(),
       questionTitle: req.body.questionTitle,
       questionText: req.body.questionText,
-      // date: new Date(),
       userId: req.body.userId,
+      date: req.body.date,
+      isAnswered: req.body.isAnswered,
     });
 
     await question.save();
@@ -30,16 +27,22 @@ const CREATE_QUESTION = async (req, res) => {
 
 const GET_ALL_QUESTIONS = async (req, res) => {
   try {
-    const questions = await QuestionModel.find().sort({ date: 1 });
+    const questions = await QuestionModel.find().sort({ date: -1 });
 
-    return res.status(200).json({ questions: questions });
+    const populatedQuestions = await Promise.all(
+      questions.map(async (question) => {
+        const user = await UserModel.findOne({ id: question.userId }, "name");
+        return { ...question.toObject(), userName: user.name };
+      })
+    );
+
+    return res.status(200).json({ questions: populatedQuestions });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).json({ message: "Error in application" });
   }
 };
 
-// ////
 const DELETE_QUESTION_BY_ID = async (req, res) => {
   try {
     const id = req.params.id;
@@ -52,18 +55,20 @@ const DELETE_QUESTION_BY_ID = async (req, res) => {
         .json({ message: `Question with id ${id} does not exist.` });
     }
 
-    //??? login/validate
     if (question.userId !== req.body.userId) {
       return res.status(403).json({
         message: "You can only delete question that you posted",
       });
     }
 
+    await AnswerModel.deleteMany({ questionId: id });
+
     await QuestionModel.deleteOne({ id: id });
 
-    return res
-      .status(200)
-      .json({ message: "Question has been deleted", question: question });
+    return res.status(200).json({
+      message: "Question and it's answers have been deleted",
+      question: question,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Error in application" });
