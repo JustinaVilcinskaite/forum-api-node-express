@@ -137,7 +137,7 @@ const POST_LIKE_ANSWER = async (req, res) => {
       answer.gainedLikesNumber -= 1;
       await answer.save();
       return res.status(200).json({
-        message: "Like removed, returning to neutral state",
+        message: "Like removed",
         gainedLikesNumber: answer.gainedLikesNumber,
       });
     }
@@ -179,7 +179,7 @@ const POST_DISLIKE_ANSWER = async (req, res) => {
       answer.gainedLikesNumber += 1;
       await answer.save();
       return res.status(200).json({
-        message: "Dislike removed, returning to neutral state",
+        message: "Dislike removed",
         gainedLikesNumber: answer.gainedLikesNumber,
       });
     }
@@ -203,28 +203,10 @@ const POST_DISLIKE_ANSWER = async (req, res) => {
   }
 };
 
-const GET_NET_SCORE_LIKES_FOR_ANSWER = async (req, res) => {
-  try {
-    const answer = await AnswerModel.findOne({ id: req.params.id });
-
-    if (!answer) {
-      return res.status(404).json({ message: "Answer not found" });
-    }
-
-    return res.status(200).json({
-      gainedLikesNumber: answer.gainedLikesNumber,
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Error in application" });
-  }
-};
-
 export {
   GET_QUESTION_WITH_ANSWERS,
   CREATE_ANSWER_FOR_QUESTION,
   DELETE_ANSWER_BY_ID,
   POST_LIKE_ANSWER,
   POST_DISLIKE_ANSWER,
-  GET_NET_SCORE_LIKES_FOR_ANSWER,
 };
