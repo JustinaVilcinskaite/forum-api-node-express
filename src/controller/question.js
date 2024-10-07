@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import QuestionModel from "../model/question.js";
 import AnswerModel from "../model/answer.js";
-import UserModel from "../model/user.js";
+// import UserModel from "../model/user.js";
 
 const CREATE_QUESTION = async (req, res) => {
   try {
@@ -25,18 +25,47 @@ const CREATE_QUESTION = async (req, res) => {
   }
 };
 
+// const GET_ALL_QUESTIONS = async (req, res) => {
+//   try {
+//     const questions = await QuestionModel.find().sort({ date: -1 });
+
+//     const populatedQuestions = await Promise.all(
+//       questions.map(async (question) => {
+//         const user = await UserModel.findOne({ id: question.userId }, "name");
+//         return { ...question.toObject(), userName: user.name };
+//       })
+//     );
+
+//     return res.status(200).json({ questions: populatedQuestions });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: "Error in application" });
+//   }
+// };
+
 const GET_ALL_QUESTIONS = async (req, res) => {
   try {
-    const questions = await QuestionModel.find().sort({ date: -1 });
-
-    const populatedQuestions = await Promise.all(
-      questions.map(async (question) => {
-        const user = await UserModel.findOne({ id: question.userId }, "name");
-        return { ...question.toObject(), userName: user.name };
+    const questions = await QuestionModel.find()
+      .populate({
+        path: "userId",
+        select: "name",
+        model: "User",
+        localField: "userId",
+        foreignField: "id",
       })
-    );
+      .sort({ date: -1 });
 
-    return res.status(200).json({ questions: populatedQuestions });
+    const response = questions.map((question) => ({
+      id: question.id,
+      questionTitle: question.questionTitle,
+      questionText: question.questionText,
+      date: question.date,
+      userId: question.userId.id,
+      name: question.userId.name,
+      isAnswered: question.isAnswered,
+    }));
+
+    return res.status(200).json({ questions: response });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Error in application" });

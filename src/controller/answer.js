@@ -1,13 +1,57 @@
 import { v4 as uuidv4 } from "uuid";
 import AnswerModel from "../model/answer.js";
 import QuestionModel from "../model/question.js";
-import UserModel from "../model/user.js";
+// import UserModel from "../model/user.js";
+
+// const GET_QUESTION_WITH_ANSWERS = async (req, res) => {
+//   try {
+//     const questionId = req.params.id;
+
+//     const question = await QuestionModel.findOne({ id: questionId });
+
+//     if (!question) {
+//       return res
+//         .status(404)
+//         .json({ message: `Question with id ${questionId} does not exist.` });
+//     }
+
+//     const user = await UserModel.findOne({ id: question.userId }, "name");
+
+//     const answers = await AnswerModel.find({ questionId: questionId }).sort({
+//       gainedLikesNumber: -1,
+//     });
+
+//     const populatedAnswers = await Promise.all(
+//       answers.map(async (answer) => {
+//         const answerUser = await UserModel.findOne(
+//           { id: answer.userId },
+//           "name"
+//         );
+//         return { ...answer.toObject(), userName: answerUser.name };
+//       })
+//     );
+
+//     return res.status(200).json({
+//       question: { ...question.toObject(), userName: user.name },
+//       answers: populatedAnswers,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: "Error in application" });
+//   }
+// };
 
 const GET_QUESTION_WITH_ANSWERS = async (req, res) => {
   try {
     const questionId = req.params.id;
 
-    const question = await QuestionModel.findOne({ id: questionId });
+    const question = await QuestionModel.findOne({ id: questionId }).populate({
+      path: "userId",
+      select: "name",
+      model: "User",
+      localField: "userId",
+      foreignField: "id",
+    });
 
     if (!question) {
       return res
@@ -15,25 +59,39 @@ const GET_QUESTION_WITH_ANSWERS = async (req, res) => {
         .json({ message: `Question with id ${questionId} does not exist.` });
     }
 
-    const user = await UserModel.findOne({ id: question.userId }, "name");
-
-    const answers = await AnswerModel.find({ questionId: questionId }).sort({
-      gainedLikesNumber: -1,
-    });
-
-    const populatedAnswers = await Promise.all(
-      answers.map(async (answer) => {
-        const answerUser = await UserModel.findOne(
-          { id: answer.userId },
-          "name"
-        );
-        return { ...answer.toObject(), userName: answerUser.name };
+    const answers = await AnswerModel.find({ questionId: questionId })
+      .populate({
+        path: "userId",
+        select: "name",
+        model: "User",
+        localField: "userId",
+        foreignField: "id",
       })
-    );
+      .sort({ gainedLikesNumber: -1 });
+
+    const mappedQuestion = {
+      id: question.id,
+      questionTitle: question.questionTitle,
+      questionText: question.questionText,
+      date: question.date,
+      userId: question.userId.id,
+      name: question.userId.name,
+      isAnswered: question.isAnswered,
+    };
+
+    const mappedAnswers = answers.map((answer) => ({
+      id: answer.id,
+      answerText: answer.answerText,
+      date: answer.date,
+      gainedLikesNumber: answer.gainedLikesNumber,
+      userId: answer.userId.id,
+      name: answer.userId.name,
+      questionId: answer.questionId,
+    }));
 
     return res.status(200).json({
-      question: { ...question.toObject(), userName: user.name },
-      answers: populatedAnswers,
+      question: mappedQuestion,
+      answers: mappedAnswers,
     });
   } catch (err) {
     console.error(err);
