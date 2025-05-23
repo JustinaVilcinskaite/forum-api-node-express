@@ -83,7 +83,7 @@ Use tools like Thunder Client, Postman, or curl.
 
 > **Note:** This is the backend for a full-stack Q&A forum application.  
 > To launch the full application in the browser, the corresponding frontend (built with React) must also be running.  
-> Refer to the forum-app-react-next-ts repository for setup instructions.
+> Refer to the [`forum-app-react-next-ts`](https://github.com/JustinaVilcinskaite/forum-app-react-next-ts) repository for frontend setup instructions.
 
 
 ## Project Structure
