@@ -2,14 +2,13 @@ import { v4 as uuidv4 } from "uuid";
 import AnswerModel from "../model/answer.js";
 import QuestionModel from "../model/question.js";
 
-
 const GET_QUESTION_WITH_ANSWERS = async (req, res) => {
   try {
     const questionId = req.params.id;
 
     const question = await QuestionModel.findOne({ id: questionId }).populate({
       path: "userId",
-      select: "name",
+      select: "name id",
       model: "User",
       localField: "userId",
       foreignField: "id",
@@ -24,7 +23,7 @@ const GET_QUESTION_WITH_ANSWERS = async (req, res) => {
     const answers = await AnswerModel.find({ questionId: questionId })
       .populate({
         path: "userId",
-        select: "name",
+        select: "name id",
         model: "User",
         localField: "userId",
         foreignField: "id",

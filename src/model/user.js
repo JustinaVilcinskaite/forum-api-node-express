@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 import { capitalizeFirstLetter } from "../utils/string-modifier.js";
 
 const userSchema = mongoose.Schema({
-  id: { type: String, required: true },
+  id: { type: String, required: true, unique: true },
   name: {
     type: String,
     required: true,
     set: capitalizeFirstLetter,
   },
-  email: { type: String, required: true, lowercase: true },
+  email: { type: String, required: true, lowercase: true, unique: true },
   password: { type: String, required: true },
 });
 

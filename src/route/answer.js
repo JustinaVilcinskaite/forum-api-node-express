@@ -24,6 +24,5 @@ router.post(
 router.delete("/answers/:id", authUser, DELETE_ANSWER_BY_ID);
 router.post("/answers/:id/like", authUser, POST_LIKE_ANSWER);
 router.post("/answers/:id/dislike", authUser, POST_DISLIKE_ANSWER);
-router.delete("/answers/:id", authUser, DELETE_ANSWER_BY_ID);
 
 export default router;

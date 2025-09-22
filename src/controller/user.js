@@ -59,7 +59,7 @@ const LOGIN = async (req, res) => {
         userId: user.id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "24H" }
+      { expiresIn: "24h" }
     );
 
     return res.status(200).json({
