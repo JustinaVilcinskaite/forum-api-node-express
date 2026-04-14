@@ -5,7 +5,6 @@ const questionSchema = mongoose.Schema({
   questionTitle: { type: String, required: true },
   questionText: { type: String, required: true },
   date: { type: Date, default: Date.now },
-  // ?
   userId: { type: String, ref: "User", required: true },
   isAnswered: { type: Boolean, default: false },
 });

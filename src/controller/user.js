@@ -8,7 +8,7 @@ const SIGN_UP = async (req, res) => {
     const existingUser = await UserModel.findOne({ email: req.body.email });
 
     if (existingUser) {
-      return res.status(409).json({ message: "Email already regsitered" });
+      return res.status(409).json({ message: "Email already registered" });
     }
 
     const salt = bcrypt.genSaltSync(10);
@@ -44,7 +44,7 @@ const LOGIN = async (req, res) => {
 
     const isPasswordMatch = bcrypt.compareSync(
       req.body.password,
-      user.password
+      user.password,
     );
 
     if (!isPasswordMatch) {
@@ -59,7 +59,7 @@ const LOGIN = async (req, res) => {
         userId: user.id,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     return res.status(200).json({

@@ -30,6 +30,6 @@ app.use((req, res) => {
 
 app.listen(process.env.PORT, () => {
   console.log(
-    `Your application is launched successfully on port ${process.env.PORT}`
+    `Your application is launched successfully on port ${process.env.PORT}`,
   );
 });

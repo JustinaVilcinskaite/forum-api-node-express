@@ -5,3 +5,4 @@ export default Joi.object({
   questionText: Joi.string().required().min(20),
   userId: Joi.string().required(),
 });
+
