@@ -86,7 +86,7 @@ Replace the placeholder values with your actual MongoDB URI and secret key.
 npm run dev
 ```
 
-By default, the server will start on `http://localhost:3002` (or the port specified in .env).
+By default, the server will run on `http://localhost:3002`, or on the port specified in your `.env` file.
 
 5. **Test the API (Optional)**  
    Use tools like Thunder Client, Postman, or curl.
