@@ -12,7 +12,6 @@ This API provides the backend for a Q&A-style forum application. Authenticated u
 
 - User registration and login with hashed passwords using bcryptjs
 - JWT-based authentication for protected API routes
-- Middleware extracts and verifies tokens on restricted endpoints
 - Registration and login inputs are validated using Joi schemas
 - Restricted routes are protected by middleware that verifies JWT tokens
 
