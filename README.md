@@ -1,123 +1,114 @@
-# Forum API – Node.js, Express
+# Forum App – Backend
 
-A modular backend REST API built with Node.js, Express, and MongoDB for a full-stack Q&A forum application. It supports user authentication with JWT, question and answer management, and answer reactions such as likes and dislikes. The project uses schema validation to help keep request data consistent.
+A REST API built with Node.js, Express, and MongoDB for a full-stack Q&A forum application.
 
-## Project Overview
+The API supports JWT-based authentication, protected routes, questions, answers, and answer reactions such as likes and dislikes. Authenticated users can create content and delete only the questions or answers they have created. Joi validation is used to help keep request data consistent. It is built to work with a dedicated React/Next.js frontend.
 
-This API provides the backend for a Q&A-style forum application. Authenticated users can post questions, submit answers, and interact with answers through like/dislike functionality. Users can only delete content they have created. Core features include token-based authentication, route protection via middleware, and Joi validation. Mongoose is used to model and manage application data. The API is built to work with a dedicated React frontend.
+## Tech Stack
 
-## Key Features
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JSON Web Token (JWT)
+- bcryptjs
+- Joi
+- dotenv
+- CORS
+- uuid
+- Nodemon
+- ESLint
 
-### Authentication & Security
+## Features
 
-- User registration and login with hashed passwords using bcryptjs
-- JWT-based authentication for protected API routes
-- Registration and login inputs are validated using Joi schemas
-- Restricted routes are protected by middleware that verifies JWT tokens
+### Authentication
 
-### Question Management
+- User registration and login with hashed passwords using `bcryptjs`
+- JWT-based authentication middleware protects restricted API routes
+- Registration and login data is validated using Joi schemas
 
-- Authenticated users can post new questions
-- All users, including unauthenticated visitors, can view the full list of questions
-- Questions are returned in reverse chronological order (newest first)
-- Only the question author can delete a question
-- A question’s `isAnswered` status is updated when an answer is added or when its last answer is deleted
+### Questions & Answers
 
-### Answer Management
-
-- Authenticated users can submit answers to existing questions
-- Answers for a question are visible to all users and sorted by number of likes
-- Only the answer author can delete an answer
-- Question answer status updates automatically based on whether answers exist
+- Authenticated users can create questions and submit answers
+- All users can view questions and answers
+- Questions are returned in reverse chronological order
+- Answers for a question are sorted by like score
+- Users can delete only their own questions and answers
+- A question’s `isAnswered` status updates when an answer is added or its last answer is deleted
 
 ### Likes & Dislikes
 
 - Authenticated users can like or dislike answers
-- Likes and dislikes are mutually exclusive and reversible
-- Like/dislike state and counts are updated when the action is processed
+- Users can remove or switch reactions between like and dislike
+- Reaction counts are updated after each action
 
-### Validation & Access Control
+### Validation, Access Control & Structure
 
-- Joi validation is used for key request bodies such as registration, login, question creation, and answer submission
-- Middleware enforces authentication on protected endpoints
-- The API uses clear HTTP status codes and error messages for common failure cases
-
-### Architecture & Design
-
+- Joi validation for key request bodies
+- Ownership checks for deleting questions and answers
+- Clear HTTP status codes and error messages for common API responses
 - Modular folder structure with separate concerns for controllers, routes, models, schemas, middleware, and utilities
-- Mongoose ODM used for schema modeling and for referencing related entities
 - Environment-based configuration using `.env` variables
-- Structured to be easier to maintain and extend
-- Uses a clear REST-style route structure for core forum actions
 
 ## Getting Started
 
-Follow these steps to set up and run the project locally:
-
-1. **Clone the Repository**
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/JustinaVilcinskaite/forum-api-node-express.git
 cd forum-api-node-express
 ```
 
-2. **Install Dependencies**
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-3. **Configure Environment Variables**
+### 3. Set up environment variables
 
-Create a `.env` file in the root directory and add the following:
+Create a `.env` file in the root directory:
 
 ```env
 PORT=3002
-MONGO_CONNECTION=your_mongo_connection_string
-JWT_SECRET=your_jwt_secret_key
+MONGO_CONNECTION=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
 ```
 
-Replace the placeholder values with your actual MongoDB URI and secret key.
+Replace the placeholder values with your MongoDB connection string and JWT secret.
 
-4. **Start the Development Server**
+### 4. Run the development server
 
 ```bash
 npm run dev
 ```
 
-By default, the server will run on `http://localhost:3002`, or on the port specified in your `.env` file.
+The API will be available at:
 
-5. **Test the API (Optional)**  
-   Use tools like Thunder Client, Postman, or curl.
+```bash
+http://localhost:3002
+```
 
-> **Note:** This is the backend for a full-stack Q&A forum application.  
-> To launch the full application in the browser, the corresponding frontend (built with React) must also be running.  
-> Refer to the [`forum-app-react-next-ts`](https://github.com/JustinaVilcinskaite/forum-app-react-next-ts) repository for frontend setup instructions.
+### 5. Run the frontend
+
+This backend is built to work with a separate React/Next.js frontend.  
+To use the full application in the browser, run the frontend locally as well:
+
+[forum-app-react-next-ts](https://github.com/JustinaVilcinskaite/forum-app-react-next-ts)
 
 ## Project Structure
 
-```
+```text
 forum-api-node-express/
-├── index.js
-├── .env
-├── .gitignore
-├── package.json
-├── eslint.config.js
 ├── src/
-│   ├── controller/     # Controllers for users, questions, and answers
-│   ├── route/          # Express routes
-│   ├── model/          # Mongoose models
-│   ├── schema/         # Joi validation schemas
-│   ├── middleware/     # Authentication and validation middleware
-│   └── utils/          # Utility functions
+│   ├── controller/         # Request handlers for users, questions, and answers
+│   ├── route/              # Express route definitions
+│   ├── model/              # Mongoose data models
+│   ├── schema/             # Joi validation schemas
+│   ├── middleware/         # Authentication and validation middleware
+│   └── utils/              # Helper functions
+├── index.js                # Server entry point
+├── eslint.config.js
+├── package.json
+└── README.md
 ```
-
-## Technologies Used
-
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB, Mongoose
-- **Authentication:** JSON Web Token (JWT), bcryptjs
-- **Validation:** Joi
-- **Configuration & Utilities:** dotenv, uuid, CORS
-- **Tooling:** Nodemon, ESLint
-- **Language Features:** ES Modules
